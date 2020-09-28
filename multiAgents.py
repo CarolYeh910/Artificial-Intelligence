@@ -243,11 +243,68 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
     """
 
     def getAction(self, gameState):
-        """
-          Returns the minimax action using self.depth and self.evaluationFunction
-        """
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+      """
+        coding by zsy
+      """
+      def max_search(state,depth,b):
+        if depth == self.depth or state.isWin() or state.isLose():
+          return self.evaluationFunction(state)
+        #actions = State.getLegalActions(0)
+        v = float('-Inf')
+        a = float('-Inf')
+        for each in state.getLegalActions(0):
+          #successor = State.generateSuccessor(0,each)
+          tempv = min_search(state.generateSuccessor(0,each),1,depth,a)
+          if tempv > v:
+            v = tempv
+          if v >= b:
+            return v
+          a = max(a,v)
+        return v
+      """
+        coding by zsy
+      """
+      def min_search(state,num,depth,a):
+        if state.isWin() or state.isLose():
+          return self.evaluationFunction(state)
+        v = float('Inf')
+        b = float('Inf')
+        #actions = State.getLegalActions(num)
+        if num == state.getNumAgents() - 1:
+          for each in state.getLegalActions(num):
+            #successor = State.generateSuccessor(num,each)
+            tempv = max_search(state.generateSuccessor(num,each),depth+1,b)
+            if tempv < v:
+              v = tempv
+            if v < a:
+              return v
+            b = min(b, v)
+        else:
+          for each in state.getLegalActions(num):
+            #successor = State.generateSuccessor(num,each)
+            tempv = min_search(state.generateSuccessor(num,each),num+1,depth,a) #your v is less than the a(a has found),return
+            if tempv < v:
+              v = tempv
+            if v < a:
+              return v
+            b = min(b, v)
+        return v
+
+      count = 0
+      v = float('-Inf')
+      a = float('-Inf')
+      if gameState.isWin() or gameState.isLose() or self.depth == 0:
+        return None
+      bestaction = ''
+      for each in gameState.getLegalActions(0):
+        tempv = min_search(gameState.generateSuccessor(0,each),1,0,a)
+        if tempv > v:
+          v = tempv
+          bestaction = each
+        a = max(a,v)
+      return bestaction
+      "*** YOUR CODE HERE ***"
+      util.raiseNotDefined()
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
     """
