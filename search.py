@@ -129,6 +129,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     mynode = node(now_state)
     q.push(mynode,mynode.cost)
     find = False
+    visit = [now_state]
 
     """for"""
     debug = 0
@@ -139,16 +140,10 @@ def aStarSearch(problem, heuristic=nullHeuristic):
         successors = problem.getSuccessors(temp_node.state)
         count = len(successors)
         for i in range(count):
-            if len(temp_node.path)!=0:
-                if temp_node.path[-1] == s and successors[i][1] == n:   #(successor,action, stepCost)
-                    continue
-                if temp_node.path[-1] == n and successors[i][1] == s:
-                    continue
-                if temp_node.path[-1] == e and successors[i][1] == w:
-                    continue
-                if temp_node.path[-1] == w and successors[i][1] == e:
-                    continue
             temp_state = successors[i][0]   #successor
+            if temp_state in visit:
+                continue
+            visit.append(temp_state)
             total_cost = successors[i][2]   #cost
             total_cost = total_cost + temp_node.real_cost  #realcost
             next_node = node(temp_state)    #create new
